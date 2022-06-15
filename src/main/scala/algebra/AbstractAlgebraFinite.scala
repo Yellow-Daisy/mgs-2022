@@ -4,7 +4,10 @@ object AbstractAlgebraFinite {
   // TASK: determine whether the given element, e, is actually
   //   the identity element for the set under the operation.
   def isIdentity[T](e: T, s: Set[T], op: (T, T) => T): Boolean = {
-    ???
+    s.forall { x => // e + x == x + e == x
+      op(e, x) == x &&
+      op(x, e) == x
+    }
   }
 
   // TASK: search the set s for an identity element,
@@ -17,7 +20,8 @@ object AbstractAlgebraFinite {
     // Because if there are two identifies e1 and e2, then
     // op(e1,e2)=e1 and op(e1,e2)=e2, by definition of identity.
     // so e1=e2.
-    ???
+    s.find{x => isIdentity(x, s, op)}
+
   }
 
   def hasIdentity[T](s: Set[T], op: (T, T) => T): Boolean = {
@@ -38,9 +42,14 @@ object AbstractAlgebraFinite {
   // TASK: is it true that for all a, b, and c in s, that
   //   op(op(a, b), c) == op(a, op(b, c))?
   def isAssociative[T](s: Set[T], op: (T, T) => T): Boolean = {
-    ???
+    s.forall { a =>
+      s.forall { b =>
+        s.forall { c =>
+          op(op(a, b), c) == op(a, op(b, c))
+        }
+      }
+    }
   }
-
   // Given a set and binary operation, detect exhaustively
   //   whether it is a monoid.  I.e., check all possible cases
   //   of the monoid axioms.
@@ -55,14 +64,22 @@ object AbstractAlgebraFinite {
   //   of the group axioms.   Make use of the isMonoid function.
   def isGroup[T](s: Set[T], op: (T, T) => T): Boolean = {
     // is monoid?
-    // every element has inverse?
-    ???
+    // every element has identity
+
+    isMonoid(s, op) && {
+      val id = findIdentity(s, op).get
+      s.forall { x => s.exists { y => op(x, y) == id } }
+    }
   }
 
   // TASK: Given a set and binary operation, detect exhaustively
   //   whether the operation is commutative
   def isAbelian[T](s: Set[T], op: (T, T) => T): Boolean = {
-    ???
+    s.forall { x =>
+      s.forall { y =>
+        op(x, y) == op(y, x)
+      }
+    }
   }
 
   // TASK: Given a set and binary operation, detect exhaustively
@@ -73,8 +90,21 @@ object AbstractAlgebraFinite {
     // does addition make an Abelian group
     // does times make a monoid
     // do (right and left) distributive laws work for ALL elements
-    ???
-  }
+    if (isAbelian(s, add) == false)
+     false
+    else if (isMonoid(s, times) == false)
+     false
+    else
+       (s.forall {
+          x => s.forall{
+            y => s.forall{
+              z => times(x, add(y,z)) == add(times(x, y), times(x, z)) &&
+                   times(add(y,z), x) == add(times(y, x), times(z, x))
+            }
+          }
+       }
+      ) 
+    }
 
   // TASK: Given a set and binary operation, detect exhaustively
   //   whether it is a field.  I.e., check all possible cases
