@@ -20,7 +20,7 @@ object AbstractAlgebraFinite {
     // Because if there are two identifies e1 and e2, then
     // op(e1,e2)=e1 and op(e1,e2)=e2, by definition of identity.
     // so e1=e2.
-    s.find{x => isIdentity(x, s, op)}
+    s.find { x => isIdentity(x, s, op) }
 
   }
 
@@ -34,9 +34,7 @@ object AbstractAlgebraFinite {
   //   I.e., is it true that for ever x and y in s, that
   //   op(x,y) is also in s?
   def isClosed[T](s: Set[T], op: (T, T) => T): Boolean = {
-    s.forall(a => 
-     s.forall(b =>
-       s.contains(op(a, b))))
+    s.forall(a => s.forall(b => s.contains(op(a, b))))
   }
 
   // TASK: is it true that for all a, b, and c in s, that
@@ -91,20 +89,19 @@ object AbstractAlgebraFinite {
     // does times make a monoid
     // do (right and left) distributive laws work for ALL elements
     if (isAbelian(s, add) == false)
-     false
+      false
     else if (isMonoid(s, times) == false)
-     false
+      false
     else
-       (s.forall {
-          x => s.forall{
-            y => s.forall{
-              z => times(x, add(y,z)) == add(times(x, y), times(x, z)) &&
-                   times(add(y,z), x) == add(times(y, x), times(z, x))
-            }
+      (s.forall { x =>
+        s.forall { y =>
+          s.forall { z =>
+            times(x, add(y, z)) == add(times(x, y), times(x, z)) &&
+            times(add(y, z), x) == add(times(y, x), times(z, x))
           }
-       }
-      ) 
-    }
+        }
+      })
+  }
 
   // TASK: Given a set and binary operation, detect exhaustively
   //   whether it is a field.  I.e., check all possible cases
